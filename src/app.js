@@ -1,28 +1,28 @@
 var SCHEDULE_JSON = 'https://horaro.org/agdq/2016.json';
 
 var UI = require('ui');
-var Vector2 = require('vector2');
 var ajax = require('ajax');
 
 var mainCard = new UI.Card({
-    title: 'AGDQ 2016 Schedule',
-    body: 'By Pascal Boutin'
+    title: 'AGDQ 2016 Schedule'
 });
 
 mainCard.show();
 
-ajax({
-    url: SCHEDULE_JSON,
-    type: 'json'
-},
+mainCard.on('click', 'select', loadAndRenderData);
+
+loadAndRenderData();
+
+function loadAndRenderData() {
+    ajax({ url: SCHEDULE_JSON, type: 'json' },
      function(data) {
-         var runsMenu = new UI.Menu({
+         var eventMenu = new UI.Menu({
              sections: [{
-                 items: data.schedule.items.map(function(run) {
+                 items: data.schedule.items.map(function(item) {
                      return {
-                         title: run.data[0],
-                         subtitle: moment.parseZone(run.scheduled).format('lll'),
-                         run: run
+                         title: item.data[0],
+                         subtitle: moment.parseZone(item.scheduled).format('lll'),
+                         event: item
                      };
                  })
              }]
@@ -38,25 +38,23 @@ ajax({
              }
          }
 
-         runsMenu.selection(0, defaultSelection);
+         eventMenu.selection(0, defaultSelection);
 
-         runsMenu.on('select', function(e) {
-             var run = e.item.run;
-             var runCard = new UI.Card({
-                 title: run.data[0],
-                 subtitle: run.data[3],
+         eventMenu.on('select', function(e) {
+             var event = e.item.event;
+             var eventCard = new UI.Card({
+                 title: event.data[0],
+                 subtitle: event.data[3],
                  scrollable: true,
-                 body: getBodyFor(run)
+                 body: getBodyFor(event)
              });
 
-             runCard.show();
+             eventCard.show();
          });
 
-         runsMenu.show();
-     },
-     function() {
-         mainCard.subtitle = 'Error';
+         eventMenu.show();
      });
+}
 
 function getBodyFor(run) {
     var body = '';
@@ -65,10 +63,12 @@ function getBodyFor(run) {
         body += 'Runner(s) :\n';
         body += run.data[1] + '\n\n';
     }
+    
     if (run.data[2]) {
         body += 'Run time :\n';
         body += run.data[2] + '\n\n';
     }
+    
     body += 'Scheduled at :\n';
     body += moment.parseZone(run.scheduled).format('LLL');
 
