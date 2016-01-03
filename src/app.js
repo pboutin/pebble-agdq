@@ -21,7 +21,7 @@ function loadAndRenderData() {
                  items: data.schedule.items.map(function(item) {
                      return {
                          title: item.data[0],
-                         subtitle: moment.parseZone(item.scheduled).format('lll'),
+                         subtitle: moment.parseZone(item.scheduled).local().format('lll'),
                          event: item
                      };
                  })
@@ -31,7 +31,7 @@ function loadAndRenderData() {
          var defaultSelection = 0;
          var currentTime = moment();
          for (var i = 0; i < data.schedule.items.length; i++) {
-             var itemTime = moment.parseZone(data.schedule.items[i].scheduled);
+             var itemTime = moment.parseZone(data.schedule.items[i].scheduled).local();
              if (itemTime.isAfter(currentTime)) {
                  defaultSelection = i > 0 ? i - 1 : 0;
                  break;
@@ -70,7 +70,7 @@ function getBodyFor(run) {
     }
     
     body += 'Scheduled at :\n';
-    body += moment.parseZone(run.scheduled).format('LLL');
+    body += moment.parseZone(run.scheduled).local().format('LLL');
 
     return body;
 }
