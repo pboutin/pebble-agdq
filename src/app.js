@@ -1,10 +1,10 @@
-var SCHEDULE_JSON = 'https://horaro.org/agdq/2016.json';
+var SCHEDULE_JSON = 'https://horaro.org/sgdq/2016.json';
 
 var UI = require('ui');
 var ajax = require('ajax');
 
 var mainCard = new UI.Card({
-    title: 'AGDQ 2016 Schedule'
+    title: 'SGDQ 2016 Schedule'
 });
 
 mainCard.show();
